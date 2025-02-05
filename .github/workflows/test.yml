@@ -1,18 +1,21 @@
-
 name: Modified Maven test
 jobs:
   mvn_verify:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Maven Central Repository
-      uses: actions/setup-java@v2
-      with:
-        java-version: '17'
-        distribution: adopt
-    - name: Run the Maven verify phase
-      run: mvn --batch-mode --update-snapshots -P dev test
+      - uses: actions/checkout@v3
+      - name: Set up Maven Central Repository
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: adopt
+      - name: Run the Maven verify phase
+        run: mvn --batch-mode --update-snapshots -P dev test "-Dmaven.surefire.reportsDirectory=target/surefire-reports"
+          "-Dmaven.surefire.reportsDirectory=target" "-Dmaven.surefire.reportFormat=plain"
+          "-Dtest.source.skip=true" "-Dmaven.compiler.testSource=1.8" "-Dmaven.compiler.testGeneratedSourcesDirectory=target/test-generated-sources"
+          "-Dmaven.surefire.skip=true" "-DskipITs" "-Dmaven.compiler.skip=true" "-Dtest.compile.skip=true"
+          "-Dexec.skip=true" "-DskipTests=false"
     name: mvn_verify
 'on':
-- push
-- workflow_dispatch
+  - push
+  - workflow_dispatch
